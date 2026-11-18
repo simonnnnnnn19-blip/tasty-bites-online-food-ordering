@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tasty Bites - Food Ordering</title>
+
+    <style>
+
+        /* GENERAL PAGE DESIGN */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: linear-gradient(
+                135deg,
+                #6b21a8 0%,
+                #c4b5fd 50%,
+                #ffffff 100%
+            );
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(
+                135deg,
+                #6b21a8,
+                #9333ea,
+                #c4b5fd
+            );
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        /* NAVIGATION */
+        nav {
+            background: #581c87;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #e9d5ff;
+            text-decoration: underline;
+        }
+
+        /* MENU HEADING */
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+            color: #581c87;
+        }
+
+        /* FOOD CONTAINER */
+        .food-container {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fit,
+                minmax(220px, 1fr)
+            );
+            gap: 20px;
+            padding: 30px;
+        }
+
+        /* FOOD CARD */
+        .food-card {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* FOOD IMAGES */
+        .food-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* EMOJI WHEN NO IMAGE EXISTS */
+        .emoji {
+            font-size: 55px;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* FOOD NAME */
+        .food-card h3 {
+            color: #581c87;
+        }
+
+        /* FOOD PRICE */
+        .price {
+            color: #7e22ce;
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        /* ADD TO CART BUTTON */
+        button {
+            background: #7e22ce;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #581c87;
+        }
+
+        /* FOOTER */
+        footer {
+            background: #581c87;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 600px) {
+
+            .food-container {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 25px;
+            }
+
+            nav a {
+                margin: 8px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- WEBSITE HEADER -->
+    <header>
+
+        <h1>🍽️ Tasty Bites</h1>
+
+        <p>Fresh Food Delivered To Your Door</p>
+
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav>
+
+        <a href="/">Home</a>
+
+        <a href="/cart">Cart</a>
+
+        <a href="/admin">Admin</a>
+
+    </nav>
+
+    <!-- FOOD MENU -->
+    <h2>Our Food Menu</h2>
+
+    <div class="food-container">
+
+        {% for food in menu %}
+
+        <div class="food-card">
+
+            <!-- DISPLAY UPLOADED IMAGE -->
+            {% if food.image %}
+
+                <img
+                    src="{{ url_for('static', filename='uploads/' ~ food.image) }}"
+                    alt="{{ food.name }}"
+                    class="food-image"
+                >
+
+            {% else %}
+
+                <!-- DISPLAY EMOJI IF NO IMAGE -->
+                <div class="emoji">
+                    {{ food.emoji }}
+                </div>
+
+            {% endif %}
+
+            <!-- FOOD NAME -->
+            <h3>{{ food.name }}</h3>
+
+            <!-- FOOD PRICE -->
+            <p class="price">
+                ₹{{ food.price }}
+            </p>
+
+            <!-- ADD TO CART -->
+            <form
+                action="{{ url_for('add_to_cart', food_id=food.id) }}"
+                method="POST"
+            >
+
+                <button type="submit">
+                    Add To Cart
+                </button>
+
+            </form>
+
+        </div>
+
+        {% else %}
+
+        <p>No food items available.</p>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+
+        <p>
+            © 2026 Tasty Bites |
+            Online Food Ordering System
+        </p>
+
+    </footer>
+
+</body>
+
+</html>

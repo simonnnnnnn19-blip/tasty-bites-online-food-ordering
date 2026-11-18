@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - Tasty Bites</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        /* PAGE BACKGROUND */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(
+                135deg,
+                #6b21a8 0%,
+                #c4b5fd 50%,
+                #ffffff 100%
+            );
+            background-attachment: fixed;
+            margin: 0;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(
+                135deg,
+                #6b21a8,
+                #9333ea,
+                #c4b5fd
+            );
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-top: 0;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            padding: 25px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        h2 {
+            color: #581c87;
+        }
+
+        /* ORDERS CARD */
+        .orders {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th, td {
+            padding: 13px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #e9d5ff;
+            color: #581c87;
+        }
+
+        tr:hover {
+            background: #faf5ff;
+        }
+
+        /* SELECT */
+        select {
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #c4b5fd;
+            border-radius: 5px;
+        }
+
+        /* PURPLE BUTTONS */
+        button {
+            background: #7e22ce;
+            color: white;
+            border: none;
+            padding: 9px 14px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #581c87;
+        }
+
+        /* LOGOUT */
+        .logout {
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+
+        .logout:hover {
+            text-decoration: underline;
+        }
+
+        /* MANAGE FOOD BUTTON */
+        .manage-food {
+            display: inline-block;
+            color: white;
+            background: #7e22ce;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+
+        .manage-food:hover {
+            background: #581c87;
+        }
+
+        /* SUCCESS MESSAGE */
+        .message {
+            color: #581c87;
+            font-weight: bold;
+            background: #f3e8ff;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        /* BACK LINK */
+        .back-link {
+            color: #581c87;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px;
+            }
+
+            header {
+                padding: 18px;
+            }
+
+            .orders {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <h1>🍽️ Tasty Bites Admin Dashboard</h1>
+
+    <a class="logout" href="/admin/logout">
+        Logout
+    </a>
+
+    <br>
+
+    <a class="manage-food"
+       href="{{ url_for('admin_foods') }}">
+        Manage Food Items 🍔
+    </a>
+
+</header>
+
+<div class="container">
+
+    <h2>Customer Orders</h2>
+
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
+    {% endwith %}
+
+    <div class="orders">
+
+        {% if orders %}
+
+        <table>
+
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Food Items</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Update</th>
+            </tr>
+
+            {% for order in orders %}
+
+            <tr>
+
+                <td>#{{ order.id }}</td>
+
+                <td>{{ order.customer_name }}</td>
+
+                <td>{{ order.phone }}</td>
+
+                <td>{{ order.address }}</td>
+
+                <td>{{ order.items }}</td>
+
+                <td>₹{{ order.total }}</td>
+
+                <td>{{ order.status }}</td>
+
+                <td>
+
+                    <form
+                        method="POST"
+                        action="/admin/update-status/{{ order.id }}">
+
+                        <select name="status">
+
+                            <option value="Received"
+                                {% if order.status == 'Received' %}selected{% endif %}>
+                                Received
+                            </option>
+
+                            <option value="Preparing"
+                                {% if order.status == 'Preparing' %}selected{% endif %}>
+                                Preparing
+                            </option>
+
+                            <option value="Out for delivery"
+                                {% if order.status == 'Out for delivery' %}selected{% endif %}>
+                                Out for delivery
+                            </option>
+
+                            <option value="Completed"
+                                {% if order.status == 'Completed' %}selected{% endif %}>
+                                Completed
+                            </option>
+
+                        </select>
+
+                        <button type="submit">
+                            Update
+                        </button>
+
+                    </form>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        {% else %}
+
+        <h3>No orders received yet!</h3>
+
+        {% endif %}
+
+    </div>
+
+    <p>
+        <a class="back-link" href="/">
+            ← Back to Website
+        </a>
+    </p>
+
+</div>
+
+</body>
+</html>

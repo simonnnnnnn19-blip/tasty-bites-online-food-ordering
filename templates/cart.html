@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Tasty Bites</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+        }
+
+        header {
+            background: #198754;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #e8f5ec;
+        }
+
+        input {
+            width: 50px;
+            padding: 8px;
+        }
+
+        button, .checkout {
+            background: #198754;
+            color: white;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 22px;
+            font-weight: bold;
+            margin: 25px 0;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            color: #198754;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🛒 Your Shopping Cart</h1>
+</header>
+
+<div class="container">
+
+    <h2>Selected Food Items</h2>
+
+    {% if items %}
+
+    <form action="/update-cart" method="POST">
+
+        <table>
+            <tr>
+                <th>Food</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+
+            {% for item in items %}
+
+            <tr>
+                <td>{{ item.emoji }} {{ item.name }}</td>
+
+                <td>₹{{ item.price }}</td>
+
+                <td>
+                    <input
+                        type="number"
+                        name="{{ item.id }}"
+                        value="{{ item.quantity }}"
+                        min="0"
+                        max="20">
+                </td>
+
+                <td>₹{{ item.subtotal }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+        <div class="total">
+            Total: ₹{{ total }}
+        </div>
+
+        <button type="submit">Update Cart</button>
+
+        <a href="/checkout" class="checkout">
+            Proceed To Checkout
+        </a>
+
+    </form>
+
+    {% else %}
+
+        <h3>Your cart is empty!</h3>
+
+        <a href="/" class="checkout">Continue Shopping</a>
+
+    {% endif %}
+
+    <br>
+
+    <a href="/" class="back">← Back to Food Menu</a>
+
+</div>
+
+</body>
+</html>

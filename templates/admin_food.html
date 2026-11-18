@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Admin - Manage Food</title>
+
+    <style>
+        /* PAGE BACKGROUND */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(
+                135deg,
+                #6b21a8 0%,
+                #c4b5fd 50%,
+                #ffffff 100%
+            );
+            background-attachment: fixed;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* WHITE CARDS */
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+        }
+
+        /* HEADINGS */
+        h1, h2 {
+            color: #581c87;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        /* INPUT FIELDS */
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 7px 0;
+            box-sizing: border-box;
+            border-radius: 5px;
+        }
+
+        input, textarea {
+            border: 1px solid #ccc;
+        }
+
+        /* PURPLE BUTTONS */
+        button {
+            background: #7e22ce;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background: #581c87;
+        }
+
+        /* DELETE BUTTON */
+        .delete {
+            background: #dc3545;
+        }
+
+        .delete:hover {
+            background: #bb2d3b;
+        }
+
+        /* FOOD IMAGE */
+        .food-image {
+            width: 120px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* LINKS */
+        a {
+            display: inline-block;
+            margin: 10px 10px 10px 0;
+            color: #581c87;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* FORM LABELS */
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #581c87;
+        }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Admin - Manage Food 🍔</h1>
+
+    <a href="{{ url_for('admin_orders') }}">
+        Manage Orders
+    </a>
+
+    <a href="{{ url_for('admin_logout') }}">
+        Logout
+    </a>
+
+    <!-- ADD NEW FOOD -->
+    <div class="card">
+
+        <h2>Add New Food</h2>
+
+        <form action="{{ url_for('add_food') }}"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <input type="text"
+                   name="name"
+                   placeholder="Food name"
+                   required>
+
+            <input type="number"
+                   name="price"
+                   placeholder="Price"
+                   min="0"
+                   step="0.01"
+                   required>
+
+            <textarea name="description"
+                      placeholder="Food description"></textarea>
+
+            <input type="text"
+                   name="emoji"
+                   placeholder="Emoji (optional)"
+                   value="🍽️">
+
+            <label>Food Image:</label>
+
+            <input type="file"
+                   name="image"
+                   accept=".jpg,.jpeg,.png,.webp">
+
+            <button type="submit">
+                Add Food
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- EXISTING FOOD ITEMS -->
+    <h2>Existing Food Items</h2>
+
+    {% for food in foods %}
+
+    <div class="card">
+
+        <h3>{{ food['name'] }}</h3>
+
+        {% if food['image'] %}
+
+            <img class="food-image"
+                 src="{{ url_for('static', filename='uploads/' ~ food['image']) }}"
+                 alt="{{ food['name'] }}">
+
+        {% else %}
+
+            <p>{{ food['emoji'] }} No image uploaded</p>
+
+        {% endif %}
+
+        <!-- EDIT FOOD -->
+        <form action="{{ url_for('edit_food', food_id=food['id']) }}"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <input type="text"
+                   name="name"
+                   value="{{ food['name'] }}"
+                   required>
+
+            <input type="number"
+                   name="price"
+                   value="{{ food['price'] }}"
+                   min="0"
+                   step="0.01"
+                   required>
+
+            <textarea name="description">{{ food['description'] }}</textarea>
+
+            <input type="text"
+                   name="emoji"
+                   value="{{ food['emoji'] }}">
+
+            <label>Change image (optional):</label>
+
+            <input type="file"
+                   name="image"
+                   accept=".jpg,.jpeg,.png,.webp">
+
+            <button type="submit">
+                Save Changes
+            </button>
+
+        </form>
+
+        <!-- DELETE FOOD -->
+        <form action="{{ url_for('delete_food', food_id=food['id']) }}"
+              method="POST"
+              onsubmit="return confirm('Delete this food item?');">
+
+            <button class="delete" type="submit">
+                Delete Food
+            </button>
+
+        </form>
+
+    </div>
+
+    {% else %}
+
+        <div class="card">
+            <p>No food items available.</p>
+        </div>
+
+    {% endfor %}
+
+</div>
+
+</body>
+</html>
