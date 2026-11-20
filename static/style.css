@@ -100,6 +100,24 @@ nav a:hover {
 .food-card p {
     font-size: 16px;
 }
+/* Fix complete food image display */
+.food-card img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    display: block;
+}
+
+/* Prevent image cropping */
+.food-card {
+    overflow: visible !important;
+}
+
+.food-card img {
+    aspect-ratio: auto !important;
+}
 
 /* BUTTONS */
 button,
