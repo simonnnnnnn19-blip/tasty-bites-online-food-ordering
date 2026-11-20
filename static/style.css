@@ -64,15 +64,33 @@ nav a:hover {
 }
 
 .food-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 18px;
+    height: auto;
+    overflow: visible;
 }
 
 .food-card img {
     width: 100%;
-    height: auto;
+    height: 250px;
     object-fit: contain;
+    object-position: center;
+    display: block;
+    border-radius: 12px;
+}
+.food-image {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    border-radius: 10px;
+}
+@media (max-width: 600px) {
+    .food-image {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
 }
 
 .food-card h3 {
